@@ -20,7 +20,7 @@ import modelos.Carta;
 public class ExistCartaImp implements ICarta{
 	private static ExistCartaImp cardExist;
 	final String driver = "org.exist.xmldb.DatabaseImpl";
-	private static String URI = "xmldb:exist://localhost:2506/exist/xmlrpc/db/Cartas";
+	private static String URI = "xmldb:exist://localhost:8888/exist/xmlrpc/db/Cartas";
 	private Database database;
 	Collection col;
 	XMLResource res;

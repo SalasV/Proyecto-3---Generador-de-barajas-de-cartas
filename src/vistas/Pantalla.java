@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JTextField;
 
@@ -29,7 +30,9 @@ public class Pantalla extends JFrame implements ActionListener {
 	private JTextField textMazo;
 	private JButton btnGuardarMazo, btnCargarCartas, buttonPasar, buttonDevolver, btnGenerarMazo, btnCargarMazo;
 	private ExistCartaImp eci;
-	private JList listCartas;
+	private JList<Carta> listCartas, listMazo;
+	int valorIni;
+	DefaultListModel<Carta> modeloCarta, modeloMazo;
 
 	/**
 	 * Launch the application.
@@ -51,8 +54,11 @@ public class Pantalla extends JFrame implements ActionListener {
 	 * Create the frame.
 	 */
 	public Pantalla() {
-		eci=ExistCartaImp.getInstance();
-		
+		eci = ExistCartaImp.getInstance();
+		modeloCarta = new DefaultListModel<Carta>();
+		modeloMazo = new DefaultListModel<Carta>();
+		valorIni = 0;
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 902, 604);
 		contentPane = new JPanel();
@@ -68,8 +74,8 @@ public class Pantalla extends JFrame implements ActionListener {
 		listCartas = new JList();
 		listCartas.setBounds(15, 47, 347, 455);
 
-		JList list = new JList();
-		list.setBounds(527, 47, 349, 456);
+		listMazo = new JList();
+		listMazo.setBounds(527, 47, 349, 456);
 
 		JLabel lblCartas = new JLabel("CARTAS");
 		lblCartas.setBounds(138, 11, 71, 25);
@@ -94,7 +100,7 @@ public class Pantalla extends JFrame implements ActionListener {
 		contentPane.add(buttonPasar);
 		contentPane.add(btnCargarCartas);
 		contentPane.add(btnGuardarMazo);
-		contentPane.add(list);
+		contentPane.add(listMazo);
 		contentPane.add(btnGenerarMazo);
 		contentPane.add(lblCartas);
 		contentPane.add(lblMazo);
@@ -110,30 +116,72 @@ public class Pantalla extends JFrame implements ActionListener {
 
 		btnCargarCartas.addActionListener(this);
 		buttonDevolver.addActionListener(this);
-		buttonPasar.addActionListener(this);
 		btnGenerarMazo.addActionListener(this);
 		btnGuardarMazo.addActionListener(this);
 		btnCargarMazo.addActionListener(this);
+		buttonPasar.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnCargarCartas) {
-			DefaultListModel modelo = new DefaultListModel();
-			for (Carta carta : eci.getCards()) {
-				modelo.addElement(carta.toString());
-			}
-			listCartas.setModel(modelo);
+			cargarCartas();
 		} else if (e.getSource() == buttonDevolver) {
-
+			deMazoACarta();
 		} else if (e.getSource() == buttonPasar) {
-
+			deCartaAMazo();
 		} else if (e.getSource() == btnGenerarMazo) {
-
+			generarMazo();
 		} else if (e.getSource() == btnGuardarMazo) {
 
 		} else if (e.getSource() == btnCargarMazo) {
 
 		}
+	}
+
+	private void generarMazo() {
+		modeloCarta.clear();
+		modeloMazo.clear();
+		cargarCartas();
+		int random=0;
+
+		while (valorIni <= 20) {
+			random = (int) (Math.random() * modeloCarta.size() + 1) - 1;
+
+			if (valorIni + listCartas.getModel().getElementAt(random).getValorCarta() <= 20) {
+				modeloMazo.addElement(listCartas.getModel().getElementAt(random));
+				valorIni = valorIni + listCartas.getModel().getElementAt(random).getValorCarta();
+				modeloCarta.removeElementAt(random);
+			} else {
+				valorIni = valorIni + listCartas.getModel().getElementAt(random).getValorCarta();
+			}
+		}
+		valorIni = valorIni - listCartas.getModel().getElementAt(random).getValorCarta();
+		listMazo.setModel(modeloMazo);
+	}
+
+	private void cargarCartas() {
+		if (modeloCarta.getSize() == 0) {
+			for (Carta carta : eci.getCards()) {
+				modeloCarta.addElement(carta);
+			}
+			listCartas.setModel(modeloCarta);
+		}
+	}
+
+	private void deCartaAMazo() {
+		if (valorIni + listCartas.getSelectedValue().getValorCarta() <= 20) {
+			valorIni = valorIni + listCartas.getSelectedValue().getValorCarta();
+			modeloMazo.addElement(listCartas.getSelectedValue());
+			modeloCarta.removeElementAt(listCartas.getSelectedIndex());
+			listMazo.setModel(modeloMazo);
+		}
+	}
+
+	private void deMazoACarta() {
+		valorIni = valorIni - listMazo.getSelectedValue().getValorCarta();
+		modeloCarta.addElement(listMazo.getSelectedValue());
+		modeloMazo.removeElementAt(listMazo.getSelectedIndex());
+		listCartas.setModel(modeloCarta);
 	}
 }
