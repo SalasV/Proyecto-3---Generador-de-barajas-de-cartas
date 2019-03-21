@@ -2,19 +2,19 @@ package modelos;
 
 public class Carta {
 	private int id;
-	private String nombre;
-	private int coste;
-	private int ataque;
-	private int defensa;
-	private int valorCarta;
+	private String name;
+	private int summonCost;
+	private int attack;
+	private int defense;
+	private int value;
 	
-	public Carta(int id, String nombre, int coste, int ataque, int defensa, int valorCarta) {
+	public Carta(int id, String name, int summonCost, int attack, int defense, int value) {
 		this.id = id;
-		this.nombre = nombre;
-		this.coste = coste;
-		this.ataque = ataque;
-		this.defensa = defensa;
-		this.valorCarta = valorCarta;
+		this.name = name;
+		this.summonCost = summonCost;
+		this.attack = attack;
+		this.defense = defense;
+		this.value = value;
 	}
 
 	public int getId() {
@@ -22,29 +22,29 @@ public class Carta {
 	}
 
 	public String getNombre() {
-		return nombre;
+		return name;
 	}
 
 	public int getCoste() {
-		return coste;
+		return summonCost;
 	}
 
 	public int getAtaque() {
-		return ataque;
+		return attack;
 	}
 
 	public int getDefensa() {
-		return defensa;
+		return defense;
 	}
 
 	public int getValorCarta() {
-		return valorCarta;
+		return value;
 	}
 
 	@Override
 	public String toString() {
-		return "Carta [id=" + id + ", nombre=" + nombre + ", coste=" + coste + ", ataque=" + ataque + ", defensa="
-				+ defensa + ", valorCarta=" + valorCarta + "]";
+		return "Carta [id=" + id + ", nombre=" + name + ", coste=" + summonCost + ", ataque=" + attack + ", defensa="
+				+ defense + ", valorCarta=" + value + "]";
 	}
 
 }
