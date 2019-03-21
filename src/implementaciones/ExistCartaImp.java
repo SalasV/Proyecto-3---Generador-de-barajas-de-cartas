@@ -25,7 +25,7 @@ public class ExistCartaImp implements ICarta{
 	Collection col;
 	XMLResource res;
 	Class cl;
-	private ArrayList<Carta> cards = new ArrayList<Carta>();
+	private ArrayList<Carta> cartas = new ArrayList<Carta>();
 
 	private void connect() {
 		try {
@@ -51,7 +51,7 @@ public class ExistCartaImp implements ICarta{
 			//System.out.println(allCards.toString());
 			for (Object object : allCards) {
 				Carta carta = new Gson().fromJson(object.toString(), Carta.class);
-				cards.add(carta);
+				cartas.add(carta);
 			}
 
 		} catch (XMLDBException e) {
@@ -72,7 +72,7 @@ public class ExistCartaImp implements ICarta{
 
 	public ArrayList<Carta> getCards() {
 		// TODO Auto-generated method stub
-		return cards;
+		return cartas;
 	}
 
 	public Carta getCard(int id) {
@@ -80,6 +80,7 @@ public class ExistCartaImp implements ICarta{
 		return null;
 	}
 
+	//Test
 	public static void main(String[] args) {
 		ExistCartaImp cardImpl = ExistCartaImp.getInstance();
 		System.out.println(cardImpl.getCards());
