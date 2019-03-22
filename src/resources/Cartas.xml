@@ -70,4 +70,74 @@
     <defense>8</defense>
     <value>8</value>
   </card>
+  <card id="11">
+    <name>Jogglypaff</name>
+    <summonCost>3</summonCost>
+    <attack>2</attack>
+    <defense>5</defense>
+    <value>3</value>
+  </card>
+  <card id="12">
+    <name>Grimar</name>
+    <summonCost>4</summonCost>
+    <attack>3</attack>
+    <defense>3</defense>
+    <value>4</value>
+  </card>
+  <card id="13">
+    <name>Drutana</name>
+    <summonCost>5</summonCost>
+    <attack>5</attack>
+    <defense>3</defense>
+    <value>4</value>
+  </card>
+  <card id="14">
+    <name>Gyeridis</name>
+    <summonCost>6</summonCost>
+    <attack>6</attack>
+    <defense>6</defense>
+    <value>6</value>
+  </card>
+  <card id="15">
+    <name>Dotta</name>
+    <summonCost>2</summonCost>
+    <attack>2</attack>
+    <defense>2</defense>
+    <value>2</value>
+  </card>
+  <card id="16">
+    <name>Zeptres</name>
+    <summonCost>7</summonCost>
+    <attack>8</attack>
+    <defense>6</defense>
+    <value>7</value>
+  </card>
+  <card id="17">
+    <name>Mr.Moma</name>
+    <summonCost>2</summonCost>
+    <attack>2</attack>
+    <defense>2</defense>
+    <value>2</value>
+  </card>
+  <card id="18">
+    <name>Unex</name>
+    <summonCost>5</summonCost>
+    <attack>5</attack>
+    <defense>8</defense>
+    <value>6</value>
+  </card>
+  <card id="19">
+    <name>Zebot</name>
+    <summonCost>1</summonCost>
+    <attack>1</attack>
+    <defense>1</defense>
+    <value>1</value>
+  </card>
+  <card id="20">
+    <name>Miu</name>
+    <summonCost>10</summonCost>
+    <attack>15</attack>
+    <defense>10</defense>
+    <value>15</value>
+  </card>
 </cards>

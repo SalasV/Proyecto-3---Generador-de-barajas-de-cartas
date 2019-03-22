@@ -17,51 +17,59 @@ import com.google.gson.Gson;
 import interfaces.ICarta;
 import modelos.Carta;
 
-public class ExistCartaImp implements ICarta{
+public class ExistCartaImp implements ICarta {
 	private static ExistCartaImp cardExist;
 	final String driver = "org.exist.xmldb.DatabaseImpl";
-	private static String URI = "xmldb:exist://localhost:8888/exist/xmlrpc/db/Cartas";
+	private static String URI = "xmldb:exist://localhost:2506/exist/xmlrpc/db/Cartas";
+	private ArrayList<Carta> cartas = new ArrayList<Carta>();
 	private Database database;
 	Collection col;
 	XMLResource res;
 	Class cl;
-	private ArrayList<Carta> cartas = new ArrayList<Carta>();
+	
 
+	/**
+	 * Metodo para conectarse al exist db
+	 */
 	private void connect() {
 		try {
 			cl = Class.forName(driver);
 			database = (Database) cl.newInstance();
 			DatabaseManager.registerDatabase(database);
+			System.out.println("Conectado");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	// constructor privado para no poder instanciar directamente y tengamos que
-	// llamar al getInstance.
+	/**
+	 * Constructor privado para obligar a llamar al getInstance y implementar el
+	 * Sinlgeton
+	 */
 	private ExistCartaImp() {
-		// TODO Auto-generated constructor stub
 		connect();
 		try {
 			Collection col = DatabaseManager.getCollection(URI);
 			res = (XMLResource) col.getResource("Cartas.xml");
 			JSONObject xmlJSONObj = XML.toJSONObject((String) res.getContent());
-
 			JSONArray allCards = xmlJSONObj.getJSONObject("cards").getJSONArray("card");
-			//System.out.println(allCards.toString());
+
 			for (Object object : allCards) {
 				Carta carta = new Gson().fromJson(object.toString(), Carta.class);
 				cartas.add(carta);
 			}
 
 		} catch (XMLDBException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// Patron signleton para instanciar una vez el objeto la primera vez que lo
-	// llamemos y nunca mas.
+	/**
+	 * Patron signleton para instanciar solo una vez el objeto y que asi no de
+	 * errores
+	 * 
+	 * @return
+	 */
 	public static ExistCartaImp getInstance() {
 
 		if (cardExist == null) {
@@ -70,8 +78,10 @@ public class ExistCartaImp implements ICarta{
 		return cardExist;
 	}
 
+	/**
+	 * Metodo que nos devuelve un ArrayList con las cartas del xml
+	 */
 	public ArrayList<Carta> getCards() {
-		// TODO Auto-generated method stub
 		return cartas;
 	}
 
@@ -80,7 +90,7 @@ public class ExistCartaImp implements ICarta{
 		return null;
 	}
 
-	//Test
+	// Test
 	public static void main(String[] args) {
 		ExistCartaImp cardImpl = ExistCartaImp.getInstance();
 		System.out.println(cardImpl.getCards());
