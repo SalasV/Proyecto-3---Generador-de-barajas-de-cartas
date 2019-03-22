@@ -1,11 +1,9 @@
 package vistas;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,18 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-
-import org.bson.Document;
-
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 import implementaciones.ExistCartaImp;
+import implementaciones.MongoMazoImp;
 import modelos.Carta;
 import modelos.Mazo;
 
@@ -190,7 +178,7 @@ public class Pantalla extends JFrame implements ActionListener {
 			cargarCartas();
 			int random = 0;
 
-			while (valorIni <= 20) {
+			while (valorIni < 20) {
 				random = (int) (Math.random() * modeloCarta.size() + 1) - 1;
 
 				if (valorIni + listCartas.getModel().getElementAt(random).getValorCarta() <= 20) {
@@ -217,37 +205,29 @@ public class Pantalla extends JFrame implements ActionListener {
 	 * Metodo que guarda el mazo
 	 */
 	private void guardarMazo() {
-		
 		String nombreMazo = JOptionPane.showInputDialog("Introduce el nombre del nuevo mazo");
-		int valorMazo = 0;
-		MongoClientURI connector = new MongoClientURI("mongodb://localhost:27017");
-		MongoClient mongoClient = new MongoClient(connector);
-		MongoDatabase database = mongoClient.getDatabase("magicDecks");
-		MongoCollection coleccion = database.getCollection("myDecks");
-		ArrayList<Object> cartasMazo = new BasicDBList();
+		if (modeloMazo.getSize() != 0) {
 
-		Document doc = new Document();
-		doc.put("deckName", nombreMazo);
-		
-		for (int i = 0; i < modeloMazo.size(); i++) {
-			DBObject object = new BasicDBObject();
-			object.put("id", modeloMazo.get(i).getId());
-			object.put("name", modeloMazo.get(i).getNombre());
-			object.put("summonCost", modeloMazo.get(i).getCoste());
-			object.put("attack", modeloMazo.get(i).getAtaque());
-			object.put("defense", modeloMazo.get(i).getDefensa());
-			object.put("value", modeloMazo.get(i).getValorCarta());
-			valorMazo = valorMazo + modeloMazo.get(i).getValorCarta();
-			cartasMazo.add(object);
+			MongoMazoImp mmi = MongoMazoImp.getInstance();
+			Mazo mazo = new Mazo();
+			ArrayList<Carta> cartas = new ArrayList();
+			int valorMazo = 0;
+
+			for (int i = 0; i < modeloMazo.size(); i++) {
+				cartas.add(modeloMazo.get(i));
+				valorMazo = valorMazo + modeloMazo.get(i).getValorCarta();
+			}
+			mazo.setNombre(nombreMazo);
+			mazo.setValorMazo(valorMazo);
+			mazo.setCartas(cartas);
+			mmi.insertarMazo(mazo);
+			
+//			JOptionPane.showMessageDialog(null, "Mazo "+nombreMazo+" creado correctamente", "",JOptionPane.YES_OPTION);
+//			modeloMazo.clear();
+//			cargarCartas();
+		} else {
+			JOptionPane.showMessageDialog(null, "ERROR - No hay cartas en el mazo", "ERROR",
+					JOptionPane.WARNING_MESSAGE);
 		}
-		doc.put("deckValue", valorMazo);
-
-		doc.put("cardsOnDeck", cartasMazo);
-		coleccion.insertOne(doc);
-
-		mongoClient.close();
-		connector = null;
-		coleccion = null;
-		database = null;
 	}
 }

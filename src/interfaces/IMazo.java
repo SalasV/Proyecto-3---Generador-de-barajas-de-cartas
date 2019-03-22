@@ -6,7 +6,7 @@ public interface IMazo {
 
 	public Mazo obtenerMazoPorNombre(String name);
 	public void cargarMazo(Mazo mazo);
-	
-	
+	public void insertarMazo(Mazo mazo);
+
 }
 

@@ -1,8 +1,6 @@
 package implementaciones;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
@@ -11,9 +9,7 @@ import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
-
 import com.google.gson.Gson;
-
 import interfaces.ICarta;
 import modelos.Carta;
 
@@ -29,7 +25,7 @@ public class ExistCartaImp implements ICarta {
 	
 
 	/**
-	 * Metodo para conectarse al exist db
+	 * Metodo para conectarse a exist db
 	 */
 	private void connect() {
 		try {
@@ -88,12 +84,6 @@ public class ExistCartaImp implements ICarta {
 	public Carta getCard(int id) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	// Test
-	public static void main(String[] args) {
-		ExistCartaImp cardImpl = ExistCartaImp.getInstance();
-		System.out.println(cardImpl.getCards());
 	}
 
 }
