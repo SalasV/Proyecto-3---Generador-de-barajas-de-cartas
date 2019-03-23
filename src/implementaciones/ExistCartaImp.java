@@ -16,7 +16,7 @@ import modelos.Carta;
 public class ExistCartaImp implements ICarta {
 	private static ExistCartaImp cardExist;
 	final String driver = "org.exist.xmldb.DatabaseImpl";
-	private static String URI = "xmldb:exist://localhost:2506/exist/xmlrpc/db/Cartas";
+	private static String URI = "xmldb:exist://localhost:8888/exist/xmlrpc/db/Cartas";
 	private ArrayList<Carta> cartas = new ArrayList<Carta>();
 	private Database database;
 	Collection col;
@@ -46,7 +46,7 @@ public class ExistCartaImp implements ICarta {
 		connect();
 		try {
 			Collection col = DatabaseManager.getCollection(URI);
-			res = (XMLResource) col.getResource("Cartas.xml");
+			res = (XMLResource) col.getResource("card_collection.xml");
 			JSONObject xmlJSONObj = XML.toJSONObject((String) res.getContent());
 			JSONArray allCards = xmlJSONObj.getJSONObject("cards").getJSONArray("card");
 
@@ -79,11 +79,6 @@ public class ExistCartaImp implements ICarta {
 	 */
 	public ArrayList<Carta> getCards() {
 		return cartas;
-	}
-
-	public Carta getCard(int id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

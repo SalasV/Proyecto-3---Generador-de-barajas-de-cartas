@@ -3,36 +3,45 @@ package modelos;
 import java.util.ArrayList;
 
 public class Mazo {
-	private String nombre;
-	private int valorMazo;
-	private ArrayList<Carta> cartas;
+	private String deckName;
+	private int deckValue;
+	private ArrayList<Carta> deck;
+
+	public Mazo() {
+	}
+
+	public Mazo(String deckName, int deckValue, ArrayList<Carta> deck) {
+		this.deckName = deckName;
+		this.deckValue = deckValue;
+		this.deck = deck;
+	}
 
 	public String getNombre() {
-		return nombre;
+		return deckName;
 	}
 
 	public int getValorMazo() {
-		return valorMazo;
+		return deckValue;
 	}
 
 	public ArrayList<Carta> getCartas() {
-		return cartas;
+		return deck;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setNombre(String deckName) {
+		this.deckName = deckName;
 	}
 
-	public void setValorMazo(int valorMazo) {
-		this.valorMazo = valorMazo;
+	public void setValorMazo(int deckValue) {
+		this.deckValue = deckValue;
 	}
 
-	public void setCartas(ArrayList<Carta> cartas) {
-		this.cartas = cartas;
+	public void setCartas(ArrayList<Carta> deck) {
+		this.deck = deck;
 	}
 
 	@Override
 	public String toString() {
-		return "Mazo [nombre=" + nombre + ", valorMazo=" + valorMazo + ", cartas=" + cartas + "]";
+		return "Mazo [nombre=" + deckName + ", valorMazo=" + deckValue + ", cartas=" + deck + "]";
 	}
 }

@@ -24,10 +24,12 @@ public class Pantalla extends JFrame implements ActionListener {
 	private DefaultListModel<Carta> modeloCarta, modeloMazo;
 	private JList<Carta> listCartas, listMazo;
 	private JTextField textMazo;
-	private boolean poderRandom;
+	private boolean poderRandom, actualizar;
 	private JPanel contentPane;
 	private ExistCartaImp eci;
+	private MongoMazoImp mmi;
 	private int valorIni;
+	private String nombreMazoExistente;
 
 	/**
 	 * Create the frame.
@@ -103,10 +105,12 @@ public class Pantalla extends JFrame implements ActionListener {
 	 */
 	private void inicializar() {
 		eci = ExistCartaImp.getInstance();
+		mmi = MongoMazoImp.getInstance();
 		modeloCarta = new DefaultListModel<Carta>();
 		modeloMazo = new DefaultListModel<Carta>();
 		poderRandom = false;
 		valorIni = 0;
+		actualizar = false;
 	}
 
 	/**
@@ -178,7 +182,7 @@ public class Pantalla extends JFrame implements ActionListener {
 			cargarCartas();
 			int random = 0;
 
-			while (valorIni < 20) {
+			while (valorIni <= 20) {
 				random = (int) (Math.random() * modeloCarta.size() + 1) - 1;
 
 				if (valorIni + listCartas.getModel().getElementAt(random).getValorCarta() <= 20) {
@@ -199,34 +203,106 @@ public class Pantalla extends JFrame implements ActionListener {
 	 * Metodo que carga un mazo existente
 	 */
 	private void cargarMazo() {
+		Mazo mazo = mmi.obtenerMazoPorNombre(textMazo.getText());
+		ArrayList<Integer> ids = new ArrayList();
+
+		if (mazo != null) {
+			boolean introducir = true;
+			modeloMazo.clear();
+			modeloCarta.clear();
+
+			for (Carta carta : mazo.getCartas()) {
+				modeloMazo.addElement(carta);
+				ids.add(carta.getId());
+			}
+
+			for (Carta carta : eci.getCards()) {
+				for (int i = 0; i < ids.size(); i++) {
+					if (carta.getId() == ids.get(i)) {
+						introducir = false;
+					}
+				}
+				if (introducir) {
+					modeloCarta.addElement(carta);
+				}
+				introducir = true;
+			}
+
+			listMazo.setModel(modeloMazo);
+			listCartas.setModel(modeloCarta);
+			nombreMazoExistente=mazo.getNombre();
+			actualizar = true;
+
+		} else {
+			JOptionPane.showMessageDialog(null, "ERROR - No existe el mazo: " + textMazo.getText(), "ERROR",
+					JOptionPane.WARNING_MESSAGE);
+		}
 	}
 
 	/**
 	 * Metodo que guarda el mazo
 	 */
 	private void guardarMazo() {
-		String nombreMazo = JOptionPane.showInputDialog("Introduce el nombre del nuevo mazo");
-		if (modeloMazo.getSize() != 0) {
+		if (actualizar==false) {
+			guardarNuevoMazo();
+		}else {
+			actualizarMazo();
+		}
+	}
 
-			MongoMazoImp mmi = MongoMazoImp.getInstance();
+	private void actualizarMazo() {
+		if (modeloMazo.getSize() != 0) {
 			Mazo mazo = new Mazo();
-			ArrayList<Carta> cartas = new ArrayList();
-			int valorMazo = 0;
+			ArrayList<Carta> deck = new ArrayList();
+			int deckValue = 0;
 
 			for (int i = 0; i < modeloMazo.size(); i++) {
-				cartas.add(modeloMazo.get(i));
-				valorMazo = valorMazo + modeloMazo.get(i).getValorCarta();
+				deck.add(modeloMazo.get(i));
+				deckValue = deckValue + modeloMazo.get(i).getValorCarta();
 			}
-			mazo.setNombre(nombreMazo);
-			mazo.setValorMazo(valorMazo);
-			mazo.setCartas(cartas);
-			mmi.insertarMazo(mazo);
+			mazo.setNombre(nombreMazoExistente);
+			mazo.setValorMazo(deckValue);
+			mazo.setCartas(deck);
+			mmi.actualizarMazo(mazo);
+
+			JOptionPane.showMessageDialog(null, "Mazo " + nombreMazoExistente + " actualizado correctamente");
+			modeloMazo.clear();
+			modeloCarta.clear();
+			cargarCartas();
 			
-//			JOptionPane.showMessageDialog(null, "Mazo "+nombreMazo+" creado correctamente", "",JOptionPane.YES_OPTION);
-//			modeloMazo.clear();
-//			cargarCartas();
+			nombreMazoExistente=null;
+			actualizar=false;
 		} else {
-			JOptionPane.showMessageDialog(null, "ERROR - No hay cartas en el mazo", "ERROR",
+			JOptionPane.showMessageDialog(null, "ERROR - No se ha podido actualizar el mazo: " + nombreMazoExistente, "ERROR",
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
+	private void guardarNuevoMazo() {
+		String deckName = JOptionPane.showInputDialog("Introduce el nombre del nuevo mazo");
+
+		if (modeloMazo.getSize() != 0 && mmi.obtenerMazoPorNombre(deckName) == null) {
+
+			Mazo mazo = new Mazo();
+			ArrayList<Carta> deck = new ArrayList();
+			int deckValue = 0;
+
+			for (int i = 0; i < modeloMazo.size(); i++) {
+				deck.add(modeloMazo.get(i));
+				deckValue = deckValue + modeloMazo.get(i).getValorCarta();
+			}
+			mazo.setNombre(deckName);
+			mazo.setValorMazo(deckValue);
+			mazo.setCartas(deck);
+			mmi.insertarMazo(mazo);
+
+			JOptionPane.showMessageDialog(null, "Mazo " + deckName + " creado correctamente");
+			modeloMazo.clear();
+			modeloCarta.clear();
+			cargarCartas();
+
+		} else {
+			JOptionPane.showMessageDialog(null, "ERROR - No se ha podido crear el mazo: " + deckName, "ERROR",
 					JOptionPane.WARNING_MESSAGE);
 		}
 	}
