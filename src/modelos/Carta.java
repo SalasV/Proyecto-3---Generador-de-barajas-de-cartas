@@ -21,23 +21,23 @@ public class Carta {
 		return id;
 	}
 
-	public String getNombre() {
+	public String getName() {
 		return name;
 	}
 
-	public int getCoste() {
+	public int getSummonCost() {
 		return summonCost;
 	}
 
-	public int getAtaque() {
+	public int getAttack() {
 		return attack;
 	}
 
-	public int getDefensa() {
+	public int getDefense() {
 		return defense;
 	}
 
-	public int getValorCarta() {
+	public int getValue() {
 		return value;
 	}
 

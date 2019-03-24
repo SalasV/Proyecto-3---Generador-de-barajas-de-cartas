@@ -11,6 +11,7 @@ public class Main {
 			public void run() {
 				try {
 					Pantalla frame = new Pantalla();
+					frame.setTitle("Generador de Mazos");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

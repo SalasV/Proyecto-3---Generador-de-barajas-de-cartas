@@ -84,7 +84,6 @@ public class MongoMazoImp implements IMazo {
 		return mazo;
 	}
 
-
 	/**
 	 * Metodo que inserta el mazo en la BBDD
 	 */
@@ -93,24 +92,26 @@ public class MongoMazoImp implements IMazo {
 		ArrayList<Object> cartasMazo = new BasicDBList();
 		Document doc = new Document();
 		
-		doc.put("deckName", mazo.getNombre());
-		for (int i = 0; i < mazo.getCartas().size(); i++) {
+		doc.put("deckName", mazo.getDeckName());
+		for (int i = 0; i < mazo.getDeck().size(); i++) {
 			DBObject object = new BasicDBObject();
-			object.put("id", mazo.getCartas().get(i).getId());
-			object.put("name", mazo.getCartas().get(i).getNombre());
-			object.put("summonCost", mazo.getCartas().get(i).getCoste());
-			object.put("attack", mazo.getCartas().get(i).getAtaque());
-			object.put("defense", mazo.getCartas().get(i).getDefensa());
-			object.put("value", mazo.getCartas().get(i).getValorCarta());
+			object.put("id", mazo.getDeck().get(i).getId());
+			object.put("name", mazo.getDeck().get(i).getName());
+			object.put("summonCost", mazo.getDeck().get(i).getSummonCost());
+			object.put("attack", mazo.getDeck().get(i).getAttack());
+			object.put("defense", mazo.getDeck().get(i).getDefense());
+			object.put("value", mazo.getDeck().get(i).getValue());
 			cartasMazo.add(object);
 		}
-		doc.put("deckValue", mazo.getValorMazo());
+		doc.put("deckValue", mazo.getDeckValue());
 		doc.put("deck", cartasMazo);
 		
 		coleccion.insertOne(doc);
 	}
 	
-
+	/**
+	 * Metodo que actualiza el mazo
+	 */
 	@Override
 	public void actualizarMazo(Mazo mazo) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -123,6 +124,6 @@ public class MongoMazoImp implements IMazo {
 			}
 			//Realizamos la actualizacion
 			Document userDoc = Document.parse(mazoJson);
-			coleccion.replaceOne(Filters.eq("deckName", mazo.getNombre()), userDoc);
+			coleccion.replaceOne(Filters.eq("deckName", mazo.getDeckName()), userDoc);
 	}
 }

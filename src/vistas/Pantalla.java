@@ -153,7 +153,7 @@ public class Pantalla extends JFrame implements ActionListener {
 	 * Metodo que pasa la carta seleccionada de la lista de mazo a la de cartas
 	 */
 	private void deMazoACarta() {
-		valorIni = valorIni - listMazo.getSelectedValue().getValorCarta();
+		valorIni = valorIni - listMazo.getSelectedValue().getValue();
 		modeloCarta.addElement(listMazo.getSelectedValue());
 		modeloMazo.removeElementAt(listMazo.getSelectedIndex());
 		listCartas.setModel(modeloCarta);
@@ -163,8 +163,8 @@ public class Pantalla extends JFrame implements ActionListener {
 	 * Metodo que pasa la carta seleccionada de la lista de cartas a la de mazo
 	 */
 	private void deCartaAMazo() {
-		if (valorIni + listCartas.getSelectedValue().getValorCarta() <= 20) {
-			valorIni = valorIni + listCartas.getSelectedValue().getValorCarta();
+		if (valorIni + listCartas.getSelectedValue().getValue() <= 20) {
+			valorIni = valorIni + listCartas.getSelectedValue().getValue();
 			modeloMazo.addElement(listCartas.getSelectedValue());
 			modeloCarta.removeElementAt(listCartas.getSelectedIndex());
 			listMazo.setModel(modeloMazo);
@@ -185,15 +185,15 @@ public class Pantalla extends JFrame implements ActionListener {
 			while (valorIni <= 20) {
 				random = (int) (Math.random() * modeloCarta.size() + 1) - 1;
 
-				if (valorIni + listCartas.getModel().getElementAt(random).getValorCarta() <= 20) {
+				if (valorIni + listCartas.getModel().getElementAt(random).getValue() <= 20) {
 					modeloMazo.addElement(listCartas.getModel().getElementAt(random));
-					valorIni = valorIni + listCartas.getModel().getElementAt(random).getValorCarta();
+					valorIni = valorIni + listCartas.getModel().getElementAt(random).getValue();
 					modeloCarta.removeElementAt(random);
 				} else {
-					valorIni = valorIni + listCartas.getModel().getElementAt(random).getValorCarta();
+					valorIni = valorIni + listCartas.getModel().getElementAt(random).getValue();
 				}
 			}
-			valorIni = valorIni - listCartas.getModel().getElementAt(random).getValorCarta();
+			valorIni = valorIni - listCartas.getModel().getElementAt(random).getValue();
 			System.out.println("Valor mazo: " + valorIni);
 			listMazo.setModel(modeloMazo);
 		}
@@ -211,7 +211,7 @@ public class Pantalla extends JFrame implements ActionListener {
 			modeloMazo.clear();
 			modeloCarta.clear();
 
-			for (Carta carta : mazo.getCartas()) {
+			for (Carta carta : mazo.getDeck()) {
 				modeloMazo.addElement(carta);
 				ids.add(carta.getId());
 			}
@@ -230,7 +230,7 @@ public class Pantalla extends JFrame implements ActionListener {
 
 			listMazo.setModel(modeloMazo);
 			listCartas.setModel(modeloCarta);
-			nombreMazoExistente=mazo.getNombre();
+			nombreMazoExistente = mazo.getDeckName();
 			actualizar = true;
 
 		} else {
@@ -240,16 +240,19 @@ public class Pantalla extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Metodo que guarda el mazo
+	 * Metodo que guarda o actualiza el mazo
 	 */
 	private void guardarMazo() {
-		if (actualizar==false) {
+		if (actualizar == false) {
 			guardarNuevoMazo();
-		}else {
+		} else {
 			actualizarMazo();
 		}
 	}
 
+	/**
+	 * Metodo que actualiza el mazo
+	 */
 	private void actualizarMazo() {
 		if (modeloMazo.getSize() != 0) {
 			Mazo mazo = new Mazo();
@@ -258,30 +261,33 @@ public class Pantalla extends JFrame implements ActionListener {
 
 			for (int i = 0; i < modeloMazo.size(); i++) {
 				deck.add(modeloMazo.get(i));
-				deckValue = deckValue + modeloMazo.get(i).getValorCarta();
+				deckValue = deckValue + modeloMazo.get(i).getValue();
 			}
-			mazo.setNombre(nombreMazoExistente);
-			mazo.setValorMazo(deckValue);
-			mazo.setCartas(deck);
+			mazo.setDeckName(nombreMazoExistente);
+			mazo.setDeckValue(deckValue);
+			mazo.setDeck(deck);
 			mmi.actualizarMazo(mazo);
 
 			JOptionPane.showMessageDialog(null, "Mazo " + nombreMazoExistente + " actualizado correctamente");
 			modeloMazo.clear();
 			modeloCarta.clear();
 			cargarCartas();
-			
-			nombreMazoExistente=null;
-			actualizar=false;
+
+			nombreMazoExistente = null;
+			actualizar = false;
 		} else {
-			JOptionPane.showMessageDialog(null, "ERROR - No se ha podido actualizar el mazo: " + nombreMazoExistente, "ERROR",
-					JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(null, "ERROR - No se ha podido actualizar el mazo: " + nombreMazoExistente,
+					"ERROR", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
+	/**
+	 * Metodo que guarda un nuevo mazo
+	 */
 	private void guardarNuevoMazo() {
 		String deckName = JOptionPane.showInputDialog("Introduce el nombre del nuevo mazo");
 
-		if (modeloMazo.getSize() != 0 && mmi.obtenerMazoPorNombre(deckName) == null) {
+		if (modeloMazo.getSize() != 0 && mmi.obtenerMazoPorNombre(deckName) == null && deckName != null) {
 
 			Mazo mazo = new Mazo();
 			ArrayList<Carta> deck = new ArrayList();
@@ -289,11 +295,11 @@ public class Pantalla extends JFrame implements ActionListener {
 
 			for (int i = 0; i < modeloMazo.size(); i++) {
 				deck.add(modeloMazo.get(i));
-				deckValue = deckValue + modeloMazo.get(i).getValorCarta();
+				deckValue = deckValue + modeloMazo.get(i).getValue();
 			}
-			mazo.setNombre(deckName);
-			mazo.setValorMazo(deckValue);
-			mazo.setCartas(deck);
+			mazo.setDeckName(deckName);
+			mazo.setDeckValue(deckValue);
+			mazo.setDeck(deck);
 			mmi.insertarMazo(mazo);
 
 			JOptionPane.showMessageDialog(null, "Mazo " + deckName + " creado correctamente");

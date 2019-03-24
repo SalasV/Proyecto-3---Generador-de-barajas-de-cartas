@@ -16,32 +16,32 @@ public class Mazo {
 		this.deck = deck;
 	}
 
-	public String getNombre() {
+	public String getDeckName() {
 		return deckName;
 	}
 
-	public int getValorMazo() {
+	public int getDeckValue() {
 		return deckValue;
 	}
 
-	public ArrayList<Carta> getCartas() {
+	public ArrayList<Carta> getDeck() {
 		return deck;
 	}
 
-	public void setNombre(String deckName) {
+	public void setDeckName(String deckName) {
 		this.deckName = deckName;
 	}
 
-	public void setValorMazo(int deckValue) {
+	public void setDeckValue(int deckValue) {
 		this.deckValue = deckValue;
 	}
 
-	public void setCartas(ArrayList<Carta> deck) {
+	public void setDeck(ArrayList<Carta> deck) {
 		this.deck = deck;
 	}
 
 	@Override
 	public String toString() {
-		return "Mazo [nombre=" + deckName + ", valorMazo=" + deckValue + ", cartas=" + deck + "]";
+		return "Mazo [name=" + deckName + ", deckValue=" + deckValue + ", deck=" + deck + "]";
 	}
 }
